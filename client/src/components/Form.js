@@ -36,7 +36,6 @@ function Form({ isButtonClicked }) {
       submission_time: new Date().toISOString(),
     };
     try {
-      console.log('API URL:', process.env.REACT_APP_API_URL);
       const response = await axios.post(process.env.REACT_APP_API_URL, submissionData);
       console.log(response.data);
       alert('Submission successful!');

@@ -13,7 +13,6 @@ export const SubmissionsProvider = ({ children }) => {
     }, []);
 
     const fetchSubmissions = async () => {
-        console.log('API URL:', process.env.REACT_APP_SUBMISSIONS_API_URL);
         try {
             const { data } = await axios.get(process.env.REACT_APP_SUBMISSIONS_API_URL);
             setSubmissions(data);
