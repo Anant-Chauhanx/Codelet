@@ -70,13 +70,13 @@ app.get('/api/submissions', async (req, res) => {
     const cacheKey = 'submissions';
     const cachedSubmissions = await redisGet(cacheKey);
     if (cachedSubmissions) {
-      console.log('Serving from cache');
+      // console.log('Serving from cache');
       return res.json(JSON.parse(cachedSubmissions));
     }
 
     const [submissions] = await pool.query("SELECT * FROM submissions ORDER BY submission_time DESC");
     await redisSet(cacheKey, JSON.stringify(submissions), 'EX', 600);
-    console.log('Serving from database');
+    // console.log('Serving from database');
     res.json(submissions);
   } catch (error) {
     console.error('Error fetching submissions:', error);
