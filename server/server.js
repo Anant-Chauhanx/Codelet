@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise');
 const { createClient } = require('redis');
 require('dotenv').config();
+const axios = require('axios');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -96,6 +97,45 @@ app.post('/api/submit', async (req, res) => {
   try {
     const connection = await pool.getConnection();
     const [result] = await connection.query(query, [username, language, stdin, source_code, new Date(submission_time)]);
+
+    const { data: judgeResponse } = await axios.post(process.env.JUDGE_RESPONSE_URL, {
+      source_code,
+      language_id: getLanguageId(language),
+      stdin,
+    }, {
+      headers: {
+        'x-rapidapi-host': process.env.RAPIDAPI_HOST,
+        'x-rapidapi-key': process.env.RAPIDAPI_KEY,
+        'content-type': 'application/json',
+        'useQueryString': true,
+      },
+    });
+
+    const { token } = judgeResponse;
+
+    let judgeResult;
+    do {
+      const { data: resultResponse } = await axios.get(`${process.env.JUDGE_RESPONSE_URL}/${token}`, {
+        headers: {
+          'x-rapidapi-host': process.env.RAPIDAPI_HOST,
+          'x-rapidapi-key': process.env.RAPIDAPI_KEY,
+          'content-type': 'application/json',
+          'useQueryString': true,
+        },
+      });
+      judgeResult = resultResponse;
+    } while (judgeResult.status.id <= 2);
+
+    const stdout = judgeResult.stdout;
+
+    const updateQuery = `
+      UPDATE submissions
+      SET stdout = ?
+      WHERE id = ?
+    `;
+
+    await connection.query(updateQuery, [stdout, result.insertId]);
+
     connection.release();
 
     await redisClient.del('submissions');
@@ -109,6 +149,17 @@ app.post('/api/submit', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+function getLanguageId(language) {
+  const languages = {
+    'Python': 71,
+    'JavaScript': 63,
+    'Java': 62,
+    'C++': 54,
+  };
+
+  return languages[language];
+}
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
