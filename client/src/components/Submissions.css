@@ -1,6 +1,6 @@
 .table-container {
   margin: 20px 90px;
-  overflow-x: auto;
+  overflow-x: hidden;
   border: 1px solid #27272A;
   border-radius: 8px;
   background-color: black;
@@ -52,6 +52,7 @@ tr:hover {
   }
 
   .table-container {
+    overflow-x: auto;
     margin: 20px;
   }
 }
