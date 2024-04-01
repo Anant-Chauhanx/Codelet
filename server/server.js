@@ -140,6 +140,10 @@ app.post('/api/submit', async (req, res) => {
 
     await redisClient.del('submissions');
 
+    const [submissions] = await pool.query("SELECT * FROM submissions ORDER BY submission_time DESC");
+
+    await redisClient.set('submissions', JSON.stringify(submissions), 'EX', 600);
+
     res.status(200).json({
       message: "Submission successful",
       submissionId: result.insertId,
