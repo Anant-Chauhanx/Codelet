@@ -16,7 +16,9 @@ th,
 td {
   text-align: left;
   padding: 14px 55px;
-  font-family: Amaranth, arial, helvetica, sans-serif;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   color: #FAFAFA;
 }
 
