@@ -34,13 +34,19 @@ function Submissions() {
             </tr>
           </thead>
           <tbody>
-            {currentSubmissions.map((submission) => (
-              <tr key={submission.id}>
+            {currentSubmissions.map((submission, index) => (
+              <tr key={index}>
                 <td>{submission.username}</td>
                 <td>{submission.language}</td>
                 <td>{submission.stdin}</td>
-                <td className="source-code">{submission.source_code.substring(0, 100)}</td>
-                <td>{submission.stdout}</td>
+                <td className="source-code">{submission.source_code ? submission.source_code.substring(0, 100) : 'N/A'}</td>
+                <td>
+                  {
+                    submission.stdout
+                      ? new TextDecoder("utf-8").decode(new Uint8Array(atob(submission.stdout).split("").map(c => c.charCodeAt(0))))
+                      : 'Error: No output'
+                  }
+                </td>
                 <td>{submission.submission_time ? format(new Date(submission.submission_time), 'dd/MM/yyyy HH:mm:ss') : 'N/A'}</td>
               </tr>
             ))}
