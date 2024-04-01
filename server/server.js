@@ -115,7 +115,7 @@ app.post('/api/submit', async (req, res) => {
 
     let judgeResult;
     do {
-      const { data: resultResponse } = await axios.get(`${process.env.JUDGE_RESPONSE_URL}/${token}`, {
+      const { data: resultResponse } = await axios.get(`${process.env.JUDGE_RESPONSE_URL}/${token}?base64_encoded=true`, {
         headers: {
           'x-rapidapi-host': process.env.RAPIDAPI_HOST,
           'x-rapidapi-key': process.env.RAPIDAPI_KEY,
