@@ -19,7 +19,7 @@ function Form({ isButtonClicked }) {
     }
   }, [isButtonClicked]);
 
-  const { addSubmission } = useSubmissions();
+  const { addSubmission, fetchSubmissions } = useSubmissions();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,6 +40,7 @@ function Form({ isButtonClicked }) {
       console.log(response.data);
       alert('Submission successful!');
       addSubmission(response.data.submissionId);
+      fetchSubmissions();
       setFormData({
         username: '',
         language: 'Python',
