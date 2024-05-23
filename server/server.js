@@ -5,6 +5,7 @@ const mysql = require('mysql2/promise');
 const { createClient } = require('redis');
 require('dotenv').config();
 const axios = require('axios');
+const fs = require('fs');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -17,9 +18,14 @@ const pool = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  port: process.env.DB_PORT || 3306,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+   ssl: {
+    rejectUnauthorized: false,
+    ca: fs.readFileSync(process.env.DB_CA_CERT).toString(),
+  },
 });
 
 const redisClient = createClient({
