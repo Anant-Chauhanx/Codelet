@@ -39,6 +39,16 @@ tr:hover {
   word-wrap: break-word;
 }
 
+.copy-icon {
+  cursor: pointer;
+  color: white;
+}
+
+.copy-icon:hover {
+  color: #0056b3;
+}
+
+
 @media (max-width: 768px) {
 
   th,
