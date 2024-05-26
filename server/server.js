@@ -164,7 +164,7 @@ function getLanguageId(language) {
   const languages = {
     'Python': 71,
     'JavaScript': 63,
-    'Java': Main,
+    'Java': 62,
     'C++': 54,
   };
 
