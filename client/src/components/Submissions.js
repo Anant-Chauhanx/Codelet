@@ -4,6 +4,7 @@ import "./Submissions.css";
 import { format } from "date-fns";
 import Pagination from "./Pagination";
 import { FaCopy } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 function Submissions() {
   const { submissions, fetchSubmissions } = useSubmissions();
@@ -24,35 +25,31 @@ function Submissions() {
   const totalPages = Math.ceil(submissions.length / rowsPerPage);
 
   const handleCopy = (submission) => {
-    const stdout = submission.stdout
-      ? new TextDecoder("utf-8").decode(
-          new Uint8Array(
-            atob(submission.stdout)
-              .split("")
-              .map((c) => c.charCodeAt(0))
+    const submissionDetails = {
+      username: submission.username,
+      language: submission.language,
+      stdin: submission.stdin,
+      source_code: submission.source_code,
+      stdout: submission.stdout
+        ? new TextDecoder("utf-8").decode(
+            new Uint8Array(
+              atob(submission.stdout)
+                .split("")
+                .map((c) => c.charCodeAt(0))
+            )
           )
-        )
-      : "Error: No output";
-
-    const submissionDetails = `Username: ${submission.username}
-Language: ${submission.language}
-Stdin: ${submission.stdin}
-Source Code:
-${submission.source_code}
-Stdout:
-${stdout}
-Submission Time: ${format(
-      new Date(submission.submission_time),
-      "dd/MM/yyyy HH:mm:ss"
-    )}`;
+        : "Error: No output",
+      submission_time: submission.submission_time,
+    };
 
     navigator.clipboard
-      .writeText(submissionDetails)
+      .writeText(JSON.stringify(submissionDetails, null, 2))
       .then(() => {
-        alert("Submission details copied to clipboard!");
+        toast.success("Details copied to clipboard !");
       })
       .catch((err) => {
         console.error("Failed to copy!", err);
+        toast.error("Failed to copy submission details!");
       });
   };
 
@@ -68,7 +65,7 @@ Submission Time: ${format(
               <th>Source Code</th>
               <th>Stdout</th>
               <th>Time Stamp</th>
-              <th>Copy</th> {/* Added missing column header */}
+              <th>Copy</th>
             </tr>
           </thead>
           <tbody>
